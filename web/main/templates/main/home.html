@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="welcome-container">
+    <h1>Добро пожаловать в сервис заявок</h1>
+
+    {% if request.session.jwt_token %}
+        <div class="user-info">
+            <div class="action-buttons">
+                <a href="{% url 'tasks' %}" class="btn btn-primary">Перейти к заявкам</a>
+                <a href="{% url 'logout' %}" class="btn btn-secondary">Выйти</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+            <a href="{% url 'register' %}" class="btn btn-secondary">Зарегистрироваться</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

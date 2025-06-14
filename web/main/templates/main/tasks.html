@@ -1,0 +1,64 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="task-form">
+        <h2>{% if task_id %}Редактировать{% else %}Добавить{% endif %} заявку</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                {{ form.status.label_tag }}
+                {{ form.status }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                {% if task_id %}Обновить{% else %}Создать{% endif %}
+            </button>
+        </form>
+    </div>
+
+    <h2>Список заявок</h2>
+    {% if tasks %}
+        <div class="task-list">
+            {% for task in tasks %}
+                <div class="task-card">
+                    <div class="task-id">Заявка #{{ task.id }}</div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                        <div class="form-group">
+                            <label>Название</label>
+                            <input type="text" name="title" value="{{ task.title }}" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Статус</label>
+                            <select name="status" class="form-control">
+                                {% for val, label in form.fields.status.choices %}
+                                    <option value="{{ val }}" {% if val == task.status %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn btn-primary">Обновить</button>
+                            <button type="submit" name="delete" value="{{ task.id }}" class="btn btn-danger">Удалить</button>
+                        </div>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Нет задач для отображения</p>
+    {% endif %}
+</div>
+{% endblock %}

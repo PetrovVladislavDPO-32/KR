@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  auth:
+    build: ./auth
+    ports: ["8000:8000"]
+    volumes:
+      - ./auth:/app
+    environment:
+      - DEBUG=1
+    networks:
+      - backend
+
+  tasks:
+    build: ./tasks
+    ports: ["8001:8000"]
+    volumes:
+      - ./tasks:/app
+    environment:
+      - DEBUG=1
+    networks:
+      - backend
+    depends_on:
+      - auth
+
+  web:
+    build: ./web
+    ports: ["8002:8000"]
+    volumes:
+      - ./web:/app
+    environment:
+      - DEBUG=1
+    networks:
+      - backend
+    depends_on:
+      - auth
+      - tasks
+
+networks:
+  backend:
+    driver: bridge
