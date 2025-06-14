@@ -1,0 +1,35 @@
+name: Test Microservices
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Устанавливаем Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      # Проверяем сервис auth
+      - name: Test Auth Service
+        run: |
+          cd auth
+          docker build -t auth .
+          docker run auth python manage.py test
+
+      # Проверяем сервис tasks
+      - name: Test Tasks Service
+        run: |
+          cd tasks
+          docker build -t tasks .
+          docker run tasks python manage.py test
+
+      # Проверяем сервис web
+      - name: Test Web Service
+        run: |
+          cd web
+          docker build -t web .
