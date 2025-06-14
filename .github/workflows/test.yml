@@ -33,3 +33,4 @@ jobs:
         run: |
           cd web
           docker build -t web .
+          docker run web python manage.py test
